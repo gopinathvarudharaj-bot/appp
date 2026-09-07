@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Profile</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation populated by JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Profile Settings</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button data-theme-toggle
+                        style="background:none;border:none;cursor:pointer;font-size:20px">🌙</button>
+                    <div class="topbar-profile-group">
+                        <a href="achievements.html" class="topbar-icon-btn" title="Achievements">🏆</a>
+                        <a href="settings.html" class="topbar-icon-btn" title="Settings">⚙️</a>
+                        <a href="profile.html" class="profile-avatar-small active" id="userAvatarSmall"
+                            title="Profile">JD</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance">
+                <div class="page-header reveal-item reveal-1">
+                    <h1>👤 My Profile</h1>
+                    <p>Manage your personal info and daily goals</p>
+                </div>
+
+                <!-- Profile header -->
+                <div class="profile-header section-card reveal-item reveal-2" style="margin-bottom:24px">
+                    <div class="avatar" id="avatarInitials">?</div>
+                    <div class="profile-info">
+                        <h2 id="prof_displayName">Your Name</h2>
+                        <p id="prof_displayEmail" style="color:var(--text-muted)">your@email.com</p>
+                        <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+                            <span class="tag tag-green">🔥 <span id="profStreak">0</span> Day streak</span>
+                            <span class="tag tag-blue">🍽️ <span id="profFoods">0</span> Foods logged</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="profileForm">
+                    <div class="dashboard-grid">
+                        <!-- Personal info -->
+                        <div class="section-card reveal-item reveal-3">
+                            <div class="settings-section-title">Personal Information</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="prof_name">Full Name</label>
+                                    <input class="form-input" type="text" id="prof_name" placeholder="Your name"
+                                        autocomplete="name" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="prof_email">Email Address</label>
+                                        <input class="form-input" type="email" id="prof_email"
+                                            placeholder="your@email.com" readonly
+                                            style="opacity: 0.7; cursor: not-allowed;" title="Email cannot be changed"
+                                            autocomplete="email" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="prof_mobile">Mobile Number</label>
+                                        <input class="form-input" type="tel" id="prof_mobile" placeholder="Your number"
+                                            autocomplete="tel" />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="prof_yob">Year of Birth <span
+                                                id="prof_calculatedAge"
+                                                style="font-size:11px;color:var(--text-muted);margin-left:8px">(Age:
+                                                --)</span></label>
+                                        <select class="form-input" id="prof_yob" style="width:100%">
+                                            <option value="">Select Year</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="prof_gender">Gender</label>
+                                        <select class="form-input filter-select" id="prof_gender" style="width:100%">
+                                            <option value="">--</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="prof_weight">Weight (kg)</label>
+                                        <input class="form-input" type="number" id="prof_weight" placeholder="70" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="prof_height">Height (cm)</label>
+                                        <input class="form-input" type="number" id="prof_height" placeholder="170" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Daily goals -->
+                            <div class="section-card reveal-item reveal-4">
+                                <div class="settings-section-title">Daily Nutrition Goals</div>
+                                <div class="form-group">
+                                    <label class="form-label" for="goal_calories">🔥 Calorie Goal (kcal)</label>
+                                    <input class="form-input" type="number" id="goal_calories" placeholder="2000" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="goal_protein">🍗 Protein (g)</label>
+                                        <input class="form-input" type="number" id="goal_protein" placeholder="150" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="goal_fat">🧈 Fat (g)</label>
+                                        <input class="form-input" type="number" id="goal_fat" placeholder="65" />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="goal_carbs">🌾 Carbs (g)</label>
+                                        <input class="form-input" type="number" id="goal_carbs" placeholder="250" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="goal_water">💧 Water (glasses)</label>
+                                        <input class="form-input" type="number" id="goal_water" placeholder="8" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="goal_steps">👟 Steps Goal</label>
+                                    <input class="form-input" type="number" id="goal_steps" placeholder="10000" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:4px" class="reveal-item reveal-5">
+                            <button type="submit" class="btn btn-primary btn-ripple" style="max-width:240px">💾 Save
+                                Profile</button>
+                        </div>
+                </form>
+            </main>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = storage.get('foodtracker_user', {});
+            const d = document.getElementById('prof_displayName');
+            if (d) d.textContent = user.name || 'Your Name';
+            const e = document.getElementById('prof_displayEmail');
+            if (e) e.textContent = user.email || '';
+            const s = storage.get('foodtracker_streaks', { count: 0 });
+            const ps = document.getElementById('profStreak');
+            if (ps) ps.textContent = s.count || 0;
+            const pf = document.getElementById('profFoods');
+            if (pf) pf.textContent = FoodManager.getFoods().length;
+            const av = document.getElementById('avatarInitials');
+            if (av && user.name) av.textContent = user.name.charAt(0).toUpperCase();
+
+            // Populate Year of Birth Dropdown
+            const yobSelect = document.getElementById('prof_yob');
+            if (yobSelect) {
+                const currentYear = new Date().getFullYear();
+                for (let y = currentYear; y >= 1920; y--) {
+                    const opt = document.createElement('option');
+                    opt.value = y; opt.textContent = y;
+                    yobSelect.appendChild(opt);
+                }
+
+                // Show calculated age on change
+                yobSelect.addEventListener('change', function () {
+                    const calcSpan = document.getElementById('prof_calculatedAge');
+                    if (this.value && calcSpan) {
+                        const ageStr = currentYear - parseInt(this.value);
+                        calcSpan.textContent = `(Age: ${ageStr})`;
+                    } else if (calcSpan) {
+                        calcSpan.textContent = `(Age: --)`;
+                    }
+                });
+
+                // Set initial value from user object (if exists)
+                if (user.yob) {
+                    yobSelect.value = user.yob;
+                    yobSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

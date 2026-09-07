@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Food Logs</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation populated by JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Food Logs</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button data-theme-toggle
+                        style="background:none;border:none;cursor:pointer;font-size:20px">🌙</button>
+                    <a href="add-food.html" class="btn btn-primary btn-sm btn-ripple" style="width:auto">+ Add Food</a>
+                    <div class="topbar-profile-group">
+                        <a href="achievements.html" class="topbar-icon-btn" title="Achievements">🏆</a>
+                        <a href="settings.html" class="topbar-icon-btn" title="Settings">⚙️</a>
+                        <a href="profile.html" class="profile-avatar-small" id="userAvatarSmall" title="Profile">JD</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance">
+                <div class="page-header">
+                    <h1>📋 Food Logs</h1>
+                    <p>View, search, and manage all your food entries</p>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="logSearch" placeholder="Search food name..." />
+                    </div>
+                    <input type="date" id="logDate" class="filter-select" style="min-width:150px" />
+                    <select id="mealFilter" class="filter-select">
+                        <option value="all">All Meals</option>
+                        <option value="breakfast">🌅 Breakfast</option>
+                        <option value="lunch">☀️ Lunch</option>
+                        <option value="dinner">🌙 Dinner</option>
+                        <option value="snack">🍏 Snack</option>
+                    </select>
+                    <button class="btn btn-outline btn-sm" onclick="exportLogs()">📤 Export CSV</button>
+                </div>
+
+                <!-- Summary row -->
+                <div id="logsDateSummary" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px"></div>
+
+                <!-- Table -->
+                <div class="section-card reveal-item reveal-2" style="overflow-x:auto">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-sort="name">Food ↕️</th>
+                                <th data-sort="quantity">Qty ↕️</th>
+                                <th data-sort="meal">Meal ↕️</th>
+                                <th data-sort="calories">Calories ↕️</th>
+                                <th data-sort="protein">Protein ↕️</th>
+                                <th data-sort="fat">Fat ↕️</th>
+                                <th data-sort="carbs">Carbs ↕️</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTbody"></tbody>
+                        <tfoot>
+                            <tr id="totalRow" style="background:var(--bg-primary);font-weight:700"></tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        function exportLogs() {
+            const foods = FoodManager.getByDate(Logs.currentDate);
+            if (!foods.length) { Toast.show('No data to export for this date.', 'warning'); return; }
+            const header = 'Name,Quantity,Unit,Meal,Calories,Protein,Fat,Carbs,Sugar,Date\n';
+            const rows = foods.map(f => [
+                `"${(f.name || '').replace(/"/g, '""')}"`,
+                f.quantity, f.unit, f.meal,
+                f.calories, f.protein, f.fat, f.carbs, f.sugar, f.date
+            ].join(',')).join('\n');
+            const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `food_logs_${Logs.currentDate}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+            Toast.show('CSV downloaded! 📤', 'success');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const goals = storage.get('foodtracker_goals', DEFAULT_GOALS);
+            const totals = FoodManager.getTotals(Logs.currentDate);
+            const summary = document.getElementById('logsDateSummary');
+            if (summary) {
+                const items = [
+                    { label: 'Calories', val: Math.round(totals.calories), goal: goals.calories, unit: 'kcal', color: 'green' },
+                    { label: 'Protein', val: Math.round(totals.protein), goal: goals.protein, unit: 'g', color: 'blue' },
+                    { label: 'Fat', val: Math.round(totals.fat), goal: goals.fat, unit: 'g', color: 'orange' },
+                    { label: 'Carbs', val: Math.round(totals.carbs), goal: goals.carbs, unit: 'g', color: 'purple' },
+                ];
+                summary.innerHTML = items.map(i =>
+                    `<div class="summary-card reveal-item reveal-3" style="flex:1;min-width:120px;padding:14px 16px">
+        <div class="card-value text-${i.color}" style="font-size:22px">${i.val}</div>
+        <div class="card-label">${i.label}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${Math.min(100, Math.round(i.val / i.goal * 100))}% of ${i.goal}${i.unit}</div>
+      </div>`).join('');
+            }
+        });
+    </script>
+</body>
+
+</html>

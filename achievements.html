@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Achievements</title>
+    <meta name="description" content="Track your health milestones and unlock achievements on your fitness journey." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation populated by JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Achievements</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button data-theme-toggle
+                        style="background:none;border:none;cursor:pointer;font-size:20px">🌙</button>
+                    <div class="topbar-profile-group">
+                        <a href="achievements.html" class="topbar-icon-btn active" title="Achievements">🏆</a>
+                        <a href="settings.html" class="topbar-icon-btn" title="Settings">⚙️</a>
+                        <a href="profile.html" class="profile-avatar-small" id="userAvatarSmall" title="Profile">JD</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance" id="achievementsSection">
+                <div class="page-header">
+                    <h1>🏆 Achievements</h1>
+                    <p>Unlock badges by hitting your health goals and building habits</p>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="section-card reveal-item" style="margin-bottom:24px; padding:24px;">
+                    <div
+                        style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+                        <div>
+                            <div
+                                style="font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                                Your Progress</div>
+                            <div style="font-size:28px; font-weight:800;">
+                                <span id="achievementUnlocked" style="color:var(--accent-green)">0</span>
+                                <span style="color:var(--text-muted); font-size:18px;"> / </span>
+                                <span id="achievementTotal">12</span>
+                                <span style="font-size:16px; color:var(--text-muted); font-weight:600;"> Unlocked</span>
+                            </div>
+                        </div>
+                        <div style="flex:1; min-width:200px; max-width:400px;">
+                            <div
+                                style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:6px;">
+                                <span>Achievement Progress</span>
+                                <span id="achievementPctText">0%</span>
+                            </div>
+                            <div class="progress-bar-track" style="height:12px;">
+                                <div class="progress-bar-fill" id="achievementPct"
+                                    style="width:0%; transition: width 0.8s cubic-bezier(.4,0,.2,1);"></div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:48px;">🎯</div>
+                            <div style="font-size:12px; color:var(--text-muted);">Keep going!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Achievement Grid -->
+                <div id="achievementsGrid" class="achievements-grid">
+                    <!-- Populated by Achievements.init() in app.js -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update the percentage text label after app.js Achievements.init() runs
+            const pctBar = document.getElementById('achievementPct');
+            const pctText = document.getElementById('achievementPctText');
+            const unlocked = document.getElementById('achievementUnlocked');
+            const total = document.getElementById('achievementTotal');
+            if (pctBar && pctText && unlocked && total) {
+                const pct = Math.round((parseInt(unlocked.textContent) / parseInt(total.textContent)) * 100) || 0;
+                pctText.textContent = pct + '%';
+            }
+        });
+    </script>
+</body>
+
+</html>

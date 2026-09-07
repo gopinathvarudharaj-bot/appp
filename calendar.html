@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Calendar</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout"> <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation populated by JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Calendar</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button data-theme-toggle
+                        style="background:none;border:none;cursor:pointer;font-size:20px">🌙</button>
+                    <div class="topbar-profile-group">
+                        <a href="achievements.html" class="topbar-icon-btn" title="Achievements">🏆</a>
+                        <a href="settings.html" class="topbar-icon-btn" title="Settings">⚙️</a>
+                        <a href="profile.html" class="profile-avatar-small" id="userAvatarSmall" title="Profile">JD</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance">
+                <div class="page-header">
+                    <h1>📅 Food Log Calendar</h1>
+                    <p>Click any day to view or browse past food logs</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Calendar -->
+                    <div class="section-card reveal-item reveal-4">
+                        <!-- Month navigation -->
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+                            <button id="calPrev" class="btn btn-secondary btn-sm btn-ripple" style="width:auto">←
+                                Prev</button>
+                            <strong id="calMonthLabel" style="font-size:16px"></strong>
+                            <button id="calNext" class="btn btn-secondary btn-sm btn-ripple" style="width:auto">Next
+                                →</button>
+                        </div>
+                        <div id="calGrid" class="calendar-grid"></div>
+
+                        <!-- Legend -->
+                        <div
+                            style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--text-muted)">
+                            <span style="display:flex;align-items:center;gap:5px"><span
+                                    style="width:12px;height:12px;border-radius:3px;background:var(--accent-green);display:inline-block"></span>Today</span>
+                            <span style="display:flex;align-items:center;gap:5px"><span
+                                    style="width:12px;height:12px;border-radius:3px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);display:inline-block"></span>Has
+                                logs</span>
+                            <span style="display:flex;align-items:center;gap:5px"><span
+                                    style="width:12px;height:12px;border-radius:3px;border:2px solid var(--accent-blue);display:inline-block"></span>Selected</span>
+                        </div>
+                    </div>
+
+                    <!-- Selected day logs -->
+                    <div class="section-card reveal-item reveal-5">
+                        <div class="dash-card-title reveal-item reveal-2" style="margin-bottom:16px">
+                            📋 Food Logs – <span id="calSelectedDate" style="color:var(--accent-green)">Select a
+                                date</span>
+                        </div>
+                        <div id="calFoodList"></div>
+
+                        <!-- Daily nutrition summary for selected date -->
+                        <div id="calDaySummary" style="margin-top:16px;display:none">
+                            <div class="divider"></div>
+                            <div class="dash-card-title reveal-item reveal-3" style="margin-bottom:12px;font-size:14px">
+                                Nutrition Summary
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                                <div
+                                    style="padding:10px;background:var(--bg-primary);border-radius:var(--radius-sm);text-align:center">
+                                    <div style="font-size:20px;font-weight:800;color:var(--accent-green)"
+                                        id="calTotalCal">0</div>
+                                    <div style="font-size:11px;color:var(--text-muted)">CALORIES</div>
+                                </div>
+                                <div
+                                    style="padding:10px;background:var(--bg-primary);border-radius:var(--radius-sm);text-align:center">
+                                    <div style="font-size:20px;font-weight:800;color:var(--accent-blue)"
+                                        id="calTotalProtein">0g</div>
+                                    <div style="font-size:11px;color:var(--text-muted)">PROTEIN</div>
+                                </div>
+                                <div
+                                    style="padding:10px;background:var(--bg-primary);border-radius:var(--radius-sm);text-align:center">
+                                    <div style="font-size:20px;font-weight:800;color:var(--accent-orange)"
+                                        id="calTotalFat">0g</div>
+                                    <div style="font-size:11px;color:var(--text-muted)">FAT</div>
+                                </div>
+                                <div
+                                    style="padding:10px;background:var(--bg-primary);border-radius:var(--radius-sm);text-align:center">
+                                    <div style="font-size:20px;font-weight:800;color:var(--accent-purple)"
+                                        id="calTotalCarbs">0g</div>
+                                    <div style="font-size:11px;color:var(--text-muted)">CARBS</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        // Override Cal.renderLog to also show nutrition summary
+        const origRenderLog = Cal.renderLog.bind(Cal);
+        Cal.renderLog = function () {
+            origRenderLog();
+            const foods = FoodManager.getByDate(this.selectedDate);
+            const summary = document.getElementById('calDaySummary');
+            if (summary) {
+                if (foods.length) {
+                    summary.style.display = 'block';
+                    const totals = FoodManager.getTotals(this.selectedDate);
+                    document.getElementById('calTotalCal').textContent = Math.round(totals.calories);
+                    document.getElementById('calTotalProtein').textContent = Math.round(totals.protein) + 'g';
+                    document.getElementById('calTotalFat').textContent = Math.round(totals.fat) + 'g';
+                    document.getElementById('calTotalCarbs').textContent = Math.round(totals.carbs) + 'g';
+                } else {
+                    summary.style.display = 'none';
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>

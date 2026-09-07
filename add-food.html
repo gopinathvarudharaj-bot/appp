@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Add Food</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation populated by JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Add Food</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button data-theme-toggle
+                        style="background:none;border:none;cursor:pointer;font-size:20px">🌙</button>
+                    <div class="topbar-profile-group">
+                        <a href="achievements.html" class="topbar-icon-btn" title="Achievements">🏆</a>
+                        <a href="settings.html" class="topbar-icon-btn" title="Settings">⚙️</a>
+                        <a href="profile.html" class="profile-avatar-small" id="userAvatarSmall" title="Profile">JD</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance">
+                <div class="page-header">
+                    <h1>➕ Add Food Entry</h1>
+                    <p>Log what you ate to track your daily nutrition</p>
+                </div>
+
+                <!-- Quick Add -->
+                <div class="section-card reveal-item reveal-3">
+                    <div class="dash-card-title reveal-item reveal-2" style="margin-bottom:14px">⚡ Quick Add Popular
+                        Foods</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                        <button class="chip quick-food-btn" data-name="Banana" data-cal="89" data-protein="1"
+                            data-fat="0" data-carbs="23">🍌 Banana</button>
+                        <button class="chip quick-food-btn" data-name="Apple" data-cal="95" data-protein="0"
+                            data-fat="0" data-carbs="25">🍎 Apple</button>
+                        <button class="chip quick-food-btn" data-name="Boiled Egg" data-cal="78" data-protein="6"
+                            data-fat="5" data-carbs="1">🥚 Boiled Egg</button>
+                        <button class="chip quick-food-btn" data-name="Grilled Chicken" data-cal="165" data-protein="31"
+                            data-fat="4" data-carbs="0">🍗 Grilled Chicken (100g)</button>
+                        <button class="chip quick-food-btn" data-name="Brown Rice" data-cal="216" data-protein="5"
+                            data-fat="2" data-carbs="45">🍚 Brown Rice (1 cup)</button>
+                        <button class="chip quick-food-btn" data-name="Oatmeal" data-cal="150" data-protein="5"
+                            data-fat="3" data-carbs="27">🥣 Oatmeal (1 bowl)</button>
+                        <button class="chip quick-food-btn" data-name="Greek Yogurt" data-cal="100" data-protein="17"
+                            data-fat="0" data-carbs="6">🥛 Greek Yogurt</button>
+                        <button class="chip quick-food-btn" data-name="Salad" data-cal="80" data-protein="3"
+                            data-fat="5" data-carbs="8">🥗 Mixed Salad</button>
+                    </div>
+                </div>
+
+                <!-- Add food form -->
+                <div class="section-card reveal-item reveal-4">
+                    <form id="addFoodForm" novalidate>
+                        <div class="form-row">
+                            <div class="form-group" style="grid-column:span 2">
+                                <label class="form-label" for="foodName">Food Name *</label>
+                                <input class="form-input" type="text" id="foodName"
+                                    placeholder="e.g. Grilled Chicken Breast" />
+                                <span class="form-error">Food name is required (min 2 chars).</span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="foodQuantity">Quantity *</label>
+                                <input class="form-input" type="number" id="foodQuantity" placeholder="100" min="0.1"
+                                    step="0.1" />
+                                <span class="form-error">Enter a valid quantity.</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="foodUnit">Unit</label>
+                                <select class="form-input filter-select" id="foodUnit" style="width:100%">
+                                    <option value="g">grams (g)</option>
+                                    <option value="ml">millilitres (ml)</option>
+                                    <option value="oz">ounces (oz)</option>
+                                    <option value="cup">cup(s)</option>
+                                    <option value="piece">piece(s)</option>
+                                    <option value="bowl">bowl(s)</option>
+                                    <option value="slice">slice(s)</option>
+                                    <option value="tbsp">tablespoon(s)</option>
+                                    <option value="tsp">teaspoon(s)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="foodMeal">Meal Type</label>
+                                <select class="form-input filter-select" id="foodMeal" style="width:100%">
+                                    <option value="breakfast">🌅 Breakfast</option>
+                                    <option value="lunch">☀️ Lunch</option>
+                                    <option value="dinner">🌙 Dinner</option>
+                                    <option value="snack">🍎 Snack</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="foodDate">Date</label>
+                                <input class="form-input" type="date" id="foodDate" />
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+                        <p
+                            style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px">
+                            Nutritional Info (per serving)</p>
+
+                        <div class="form-row" style="grid-template-columns:1fr 1fr 1fr">
+                            <div class="form-group">
+                                <label class="form-label" for="foodCalories">Calories (kcal) *</label>
+                                <input class="form-input" type="number" id="foodCalories" placeholder="0" min="0" />
+                                <span class="form-error">Enter valid calories.</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="foodProtein">Protein (g)</label>
+                                <input class="form-input" type="number" id="foodProtein" placeholder="0" min="0"
+                                    step="0.1" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="foodFat">Fat (g)</label>
+                                <input class="form-input" type="number" id="foodFat" placeholder="0" min="0"
+                                    step="0.1" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="foodCarbs">Carbs (g)</label>
+                                <input class="form-input" type="number" id="foodCarbs" placeholder="0" min="0"
+                                    step="0.1" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="foodSugar">Sugar (g)</label>
+                                <input class="form-input" type="number" id="foodSugar" placeholder="0" min="0"
+                                    step="0.1" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="foodNotes">Notes (optional)</label>
+                            <input class="form-input" type="text" id="foodNotes"
+                                placeholder="e.g. Cooked with olive oil" />
+                        </div>
+
+                        <div style="display:flex;gap:12px;margin-top:8px">
+                            <button type="submit" class="btn btn-primary btn-ripple" style="flex:2">✅ Save Food
+                                Entry</button>
+                            <a href="logs.html" class="btn btn-secondary btn-ripple"
+                                style="flex:1;text-align:center">View Logs</a>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

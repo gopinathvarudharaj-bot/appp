@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Exercise Plan</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation populated by JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Exercise</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button data-theme-toggle
+                        style="background:none;border:none;cursor:pointer;font-size:20px">🌙</button>
+                    <div class="topbar-profile-group">
+                        <a href="achievements.html" class="topbar-icon-btn" title="Achievements">🏆</a>
+                        <a href="settings.html" class="topbar-icon-btn" title="Settings">⚙️</a>
+                        <a href="profile.html" class="profile-avatar-small" id="userAvatarSmall" title="Profile">JD</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance">
+                <div class="page-header">
+                    <h1>💪 7-Day Exercise Plan</h1>
+                    <p>Check off exercises as you complete them</p>
+                </div>
+
+                <!-- Weekly overview -->
+                <div class="section-card reveal-item reveal-4" style="margin-bottom:20px">
+                    <div class="dash-card-title reveal-item reveal-2" style="margin-bottom:14px">📅 Weekly Overview
+                    </div>
+                    <!-- Goal Selector -->
+                    <div class="goal-select-group" id="goalSelector">
+                        <div class="goal-option active loss" onclick="Exercise.setGoal('loss')">🔥 Weight Loss</div>
+                        <div class="goal-option" onclick="Exercise.setGoal('gain')">💪 Muscle Gain</div>
+                        <div class="goal-option" onclick="Exercise.setGoal('maintain')">⚖️ Maintain</div>
+                    </div>
+
+                    <!-- Daily Tabs -->
+                    <div id="dayTabs" class="day-tabs"></div>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="section-card reveal-item reveal-5">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <div class="dash-card-title reveal-item reveal-3" style="margin:0" id="exDayTitle">Today's
+                            Workout</div>
+                        <span style="font-size:13px;font-weight:700;color:var(--accent-green)" id="exProgressText">0/0
+                            completed</span>
+                    </div>
+                    <div class="progress-bar-track" style="height:10px;margin-bottom:20px">
+                        <div class="progress-bar-fill" id="exProgress" style="width:0%"></div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+                        <span class="exercise-badge ex-cardio" style="padding:4px 12px">❤️ Cardio</span>
+                        <span class="exercise-badge ex-strength" style="padding:4px 12px">💪 Strength</span>
+                        <span class="exercise-badge ex-flexibility" style="padding:4px 12px">🧘 Flexibility</span>
+                        <span class="exercise-badge ex-rest" style="padding:4px 12px">🟢 Active Rest</span>
+                    </div>
+
+                    <!-- Exercise list -->
+                    <div id="exerciseList" class="exercise-list"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

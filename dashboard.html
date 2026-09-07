@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Dashboard</title>
+    <meta name="description" content="Your daily nutrition dashboard – calories, macros, water, steps, and streaks." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation populated by JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Dashboard</h1>
+                </div>
+                <div class="topbar-actions">
+                    <span id="todayDate" style="font-size:13px;color:var(--text-muted)"></span>
+
+                    <button data-theme-toggle style="background:none;border:none;cursor:pointer;font-size:20px"
+                        title="Toggle theme">🌙</button>
+                    <div class="topbar-profile-group">
+                        <a href="achievements.html" class="topbar-icon-btn" title="Achievements">🏆</a>
+                        <a href="settings.html" class="topbar-icon-btn" title="Settings">⚙️</a>
+                        <a href="profile.html" class="profile-avatar-small" id="userAvatarSmall" title="Profile">JD</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance">
+                <div class="page-header">
+                    <h1 id="greetingMsg">Good morning! 👋</h1>
+                    <p>Here's your summary for today</p>
+
+                    <!-- New User Details Block -->
+                    <div id="dashUserDetails"
+                        style="display:flex; gap:16px; margin-top:12px; font-size:13px; color:var(--text-secondary); align-items:center; flex-wrap:wrap;">
+                        <span id="dashRole" class="status-badge"
+                            style="background:var(--accent-blue); color:white; padding:4px 8px; border-radius:12px; font-size:11px; font-weight:700;">USER</span>
+                        <span><span style="font-size:16px;margin-right:4px;">🎂</span> Age: <strong
+                                id="dashAge">--</strong></span>
+                        <span><span style="font-size:16px;margin-right:4px;">⚖️</span> Weight: <strong
+                                id="dashWeight">--</strong>kg</span>
+                        <span><span style="font-size:16px;margin-right:4px;">📏</span> Height: <strong
+                                id="dashHeight">--</strong>cm</span>
+                        <span><span style="font-size:16px;margin-right:4px;">👤</span> Gender: <strong id="dashGender"
+                                style="text-transform:capitalize">--</strong></span>
+                    </div>
+                </div>
+
+                <!-- Streak banner -->
+                <div class="streak-banner" id="streakBanner">
+                    <div class="streak-num" id="dashStreak">0</div>
+                    <div class="streak-info">
+                        <h3>🔥 Day Streak!</h3>
+                        <p>Keep logging to maintain your streak</p>
+                    </div>
+                    <div style="margin-left:auto;text-align:center">
+                        <div style="font-size:36px">🏆</div>
+                        <div style="font-size:12px;opacity:0.85">Consistency wins!</div>
+                    </div>
+                </div>
+
+                <!-- Summary cards -->
+                <div class="summary-grid">
+                    <div class="summary-card reveal-item reveal-2">
+                        <div class="card-icon green">🔥</div>
+                        <div class="card-value text-green" id="dashCalories">0</div>
+                        <div class="card-label">Calories</div>
+                        <div class="card-change" id="dashCaloriesPct">0% of 2000kcal</div>
+                    </div>
+                    <div class="summary-card reveal-item reveal-3">
+                        <div class="card-icon blue">🍗</div>
+                        <div class="card-value text-blue" id="dashProtein">0</div>
+                        <div class="card-label">Protein (g)</div>
+                        <div class="card-change" id="dashProteinPct">0% of 150g</div>
+                    </div>
+                    <div class="summary-card reveal-item reveal-4">
+                        <div class="card-icon orange">🧀</div>
+                        <div class="card-value text-orange" id="dashFat">0</div>
+                        <div class="card-label">Fat (g)</div>
+                        <div class="card-change" id="dashFatPct">0% of 65g</div>
+                    </div>
+                    <div class="summary-card reveal-item reveal-5">
+                        <div class="card-icon purple">🌾</div>
+                        <div class="card-value" id="dashCarbs">0</div>
+                        <div class="card-label">Carbs (g)</div>
+                        <div class="card-change" id="dashCarbsPct">0% of 250g</div>
+                    </div>
+                    <div class="summary-card reveal-item reveal-1">
+                        <div class="card-icon blue">💧</div>
+                        <div class="card-value text-blue" id="dashWater">0</div>
+                        <div class="card-label">Water (glasses)</div>
+                        <div class="card-change" id="dashWaterPct">0% of 8glasses</div>
+                    </div>
+                    <div class="summary-card reveal-item reveal-2">
+                        <div class="card-icon green">👟</div>
+                        <div class="card-value text-green" id="dashSteps">0</div>
+                        <div class="card-label">Steps</div>
+                        <div class="card-change" id="dashStepsPct">0% of 10000steps</div>
+                    </div>
+                </div>
+
+                <!-- Progress section + Macro chart -->
+                <div class="dashboard-grid">
+                    <div class="dash-card reveal-item reveal-2">
+                        <div class="dash-card-title reveal-item reveal-3">📈 Daily Progress</div>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar-header">
+                                <span class="progress-bar-label">🔥 Calories</span>
+                                <span class="progress-bar-value text-green" id="dashCaloriesVal">0 / 2000</span>
+                            </div>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill" id="progCalories" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar-header">
+                                <span class="progress-bar-label">🍗 Protein</span>
+                                <span class="progress-bar-value text-blue" id="dashProteinVal">0 / 150g</span>
+                            </div>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill purple" id="progProtein" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar-header">
+                                <span class="progress-bar-label">💧 Water</span>
+                                <span class="progress-bar-value text-blue" id="dashWaterVal">0 / 8</span>
+                            </div>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill" id="progWater" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top:16px">
+                            <a href="add-food.html" class="btn btn-outline btn-sm" style="width:auto">+ Add Food
+                                Entry</a>
+                        </div>
+                    </div>
+                    <div class="dash-card reveal-item reveal-4">
+                        <div class="dash-card-title reveal-item reveal-5">🍕 Today's Macros
+                            <a href="reports.html" style="font-size:12px;color:var(--accent-green)">View Report →</a>
+                        </div>
+                        <div class="chart-wrap"><canvas id="macroChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Recent foods + Quick habits -->
+                <div class="dashboard-grid">
+                    <div class="dash-card reveal-item reveal-1">
+                        <div class="dash-card-title reveal-item reveal-2">🍽️ Recent Foods
+                            <a href="logs.html" style="font-size:12px;color:var(--accent-green)">View all →</a>
+                        </div>
+                        <ul id="recentFoodsList"></ul>
+                        <div style="margin-top:14px">
+                            <a href="add-food.html" class="btn btn-primary btn-sm btn-ripple" style="width:auto">Log a
+                                Meal</a>
+                        </div>
+                    </div>
+                    <div class="dash-card reveal-item reveal-3">
+                        <div class="dash-card-title reveal-item reveal-4">⚡ Quick Habits</div>
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                            <div>
+                                <div
+                                    style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
+                                    <span>💧 Water</span>
+                                    <strong id="qWater">0 glasses</strong>
+                                </div>
+                                <div class="progress-bar-track">
+                                    <div class="progress-bar-fill" id="qWaterBar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div
+                                    style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
+                                    <span>👟 Steps</span>
+                                    <strong id="qSteps">0 steps</strong>
+                                </div>
+                                <div class="progress-bar-track">
+                                    <div class="progress-bar-fill orange" id="qStepsBar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div
+                                    style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
+                                    <span>😴 Sleep</span>
+                                    <strong id="qSleep">0h</strong>
+                                </div>
+                                <div class="progress-bar-track">
+                                    <div class="progress-bar-fill purple" id="qSleepBar" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:16px">
+                            <a href="habits.html" class="btn btn-outline btn-sm" style="width:auto">Update Habits →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise summary -->
+                <div class="dash-card reveal-item reveal-5">
+                    <div class="dash-card-title reveal-item reveal-1">💪 Today's Exercise
+                        <a href="exercise.html" style="font-size:12px;color:var(--accent-green)">View Plan →</a>
+                    </div>
+                    <div id="dashExercise" style="color:var(--text-muted);font-size:14px">Loading exercise plan...</div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Greeting
+            const h = new Date().getHours();
+            const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+            const user = storage.get('foodtracker_user', {});
+            document.getElementById('greetingMsg').textContent = `${greet}, ${user.name || 'Friend'}! 👋`;
+            document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
+
+            // Populate user details panel
+            if (user) {
+                const roleEl = document.getElementById('dashRole');
+                const ageEl = document.getElementById('dashAge');
+                const weightEl = document.getElementById('dashWeight');
+                const heightEl = document.getElementById('dashHeight');
+                const genderEl = document.getElementById('dashGender');
+                if (roleEl) roleEl.textContent = (user.role || 'USER').toUpperCase();
+                if (ageEl) ageEl.textContent = user.age || '--';
+                if (weightEl) weightEl.textContent = user.weight || '--';
+                if (heightEl) heightEl.textContent = user.height || '--';
+                if (genderEl) genderEl.textContent = user.gender || '--';
+                // Hide the details block if no meaningful data yet
+                const details = document.getElementById('dashUserDetails');
+                if (details && !user.age && !user.weight && !user.height) details.style.display = 'none';
+            }
+
+            // Extended dashboard render
+            const goals = storage.get('foodtracker_goals', DEFAULT_GOALS);
+            const totals = FoodManager.getTotals(TODAY);
+            const habits = storage.get('foodtracker_habits', {});
+            let streaks = storage.get('foodtracker_streaks', { count: 0, last_date: null });
+
+            // Daily streak auto-increment: only once per calendar day
+            const todayStr = TODAY; // 'YYYY-MM-DD'
+            if (streaks.last_date !== todayStr) {
+                streaks.count = (streaks.count || 0) + 1;
+                streaks.last_date = todayStr;
+                storage.set('foodtracker_streaks', streaks);
+            }
+
+            // Update streak display
+            document.getElementById('dashStreak').textContent = streaks.count || 0;
+
+            // Values text
+            document.getElementById('dashCaloriesVal').textContent = `${Math.round(totals.calories)} / ${goals.calories}`;
+            document.getElementById('dashProteinVal').textContent = `${Math.round(totals.protein)}g / ${goals.protein}g`;
+            document.getElementById('dashWaterVal').textContent = `${habits.water || 0} / ${goals.water}`;
+
+            // Quick habits
+            document.getElementById('qWater').textContent = `${habits.water || 0} glasses`;
+            document.getElementById('qSteps').textContent = `${(habits.steps || 0).toLocaleString()} steps`;
+            document.getElementById('qSleep').textContent = `${habits.sleep || 0}h`;
+            document.getElementById('qWaterBar').style.width = Math.min(100, (habits.water || 0) / goals.water * 100) + '%';
+            document.getElementById('qStepsBar').style.width = Math.min(100, (habits.steps || 0) / goals.steps * 100) + '%';
+            document.getElementById('qSleepBar').style.width = Math.min(100, (habits.sleep || 0) / 8 * 100) + '%';
+
+            // Exercise today
+            const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date().getDay()];
+            const exGoal = storage.get('foodtracker_goal', 'loss');
+            const exPlan = (Exercise.plans[exGoal] || {})[dayName] || [];
+            const exAllData = storage.get('foodtracker_exercises', {});
+            const exDone = ((exAllData[exGoal] || {})[dayName] || []).length;
+            document.getElementById('dashExercise').innerHTML = exPlan.length ?
+                `<div style="margin-bottom:10px">Today (${dayName}): <strong>${exDone}/${exPlan.length}</strong> exercises completed</div>
+     <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(exDone / exPlan.length * 100)}%"></div></div>
+     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">${exPlan.slice(0, 3).map(e => `<span class="tag tag-green">${e.name}</span>`).join('')}</div>` :
+                `<span>Rest day! 😴 Take it easy today.</span>`;
+        });
+    </script>
+</body>
+
+</html>

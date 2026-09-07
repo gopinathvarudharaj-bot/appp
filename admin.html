@@ -1,0 +1,302 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Admin-specific styles are now in css/style.css -->
+</head>
+
+<body>
+    <div id="toast-container"></div>
+
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-svg" width="28" height="28">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg></div><span class="logo-text">FoodTracker</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <a href="#overview" class="nav-link active"
+                    onclick="AdminManager.switchTab('overview', this)">Overview</a>
+                <a href="#users" class="nav-link" onclick="AdminManager.switchTab('users', this)">User Management</a>
+                <a href="#performance" class="nav-link"
+                    onclick="AdminManager.switchTab('performance', this)">Performance</a>
+                <hr style="opacity: 0.1; margin: 10px 0">
+                <a href="dashboard.html" class="nav-link">User View</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="nav-icon-svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:12px;width:20px;height:20px">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                    <h1 class="topbar-title">Admin Dashboard</h1>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-profile-group">
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content page-entrance">
+                <header class="page-header">
+                    <div class="flex justify-between items-center" style="width:100%">
+                        <div>
+                            <h1>System Analytics</h1>
+                            <p>Monitor user engagement and app performance</p>
+                        </div>
+                        <div style="text-align:right">
+                            <span class="status-badge status-online"><span class="live-dot"></span> System Live</span>
+                            <p style="font-size:11px;color:var(--text-muted);margin-top:4px" id="lastSyncTime">Last
+                                sync: Just now</p>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Sidebar now controls session tabs -->
+
+                <!-- OVERVIEW SECTION -->
+                <div id="section-overview" class="admin-section active">
+                    <div class="admin-stats-grid">
+                        <div class="admin-stat-card reveal-item reveal-1">
+                            <span class="admin-stat-label">Total Users</span>
+                            <span class="admin-stat-value" id="statTotalUsers">---</span>
+                        </div>
+                        <div class="admin-stat-card reveal-item reveal-2">
+                            <span class="admin-stat-label">Avg. Calories</span>
+                            <span class="admin-stat-value" id="statAvgCals">---</span>
+                        </div>
+                        <div class="admin-stat-card reveal-item reveal-3">
+                            <span class="admin-stat-label">Habit Success</span>
+                            <span class="admin-stat-value" id="statHabitRate">---</span>
+                        </div>
+                        <div class="admin-stat-card reveal-item reveal-4">
+                            <span class="admin-stat-label">System Uptime</span>
+                            <span class="admin-stat-value">99.9%</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-charts-grid">
+                        <div class="chart-container-admin reveal-item reveal-2">
+                            <div class="chart-title">📈 Active Users (Last 24h)</div>
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                        <div class="chart-container-admin reveal-item reveal-3">
+                            <div class="chart-title">🍱 Record Distribution</div>
+                            <canvas id="mealDistributionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrap reveal-item reveal-4">
+                        <div class="chart-title" style="padding:16px"><span class="live-dot"></span> Live User Activity
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Action</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminActivityLog">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- TECH SUMMARY CARD -->
+                    <div class="chart-container-admin reveal-item reveal-5"
+                        style="border-left: 4px solid var(--accent-blue); height: auto; min-height: fit-content; margin-top: 24px;">
+                        <div class="chart-title" style="margin-bottom:12px">🛠️ Project Summary & Tech Stack</div>
+                        <div style="font-size:14px; line-height:1.6; color:var(--text-secondary)">
+                            <p>This <strong>FoodTracker</strong> application was built using a modern, lightweight tech
+                                stack optimized for performance and maintainability:</p>
+                            <ul style="margin: 12px 0 12px 20px; color:var(--text-muted)">
+                                <li><strong>Structure:</strong> Semantic HTML5 for SEO and accessibility.</li>
+                                <li><strong>Logic:</strong> Vanilla JavaScript (ES6) for lightning-fast responsiveness
+                                    without framework overhead.</li>
+                                <li><strong>Styling:</strong> Pure CSS3 with CSS Variables for a dynamic, premium design
+                                    system.</li>
+                                <li><strong>Visualization:</strong> Chart.js 4.4.0 for real-time monitoring and
+                                    analytics.</li>
+                                <li><strong>AI Assistance:</strong> Developed with <strong>Google DeepMind's
+                                        Gemini-3-flash</strong> for intelligent code generation, UI/UX optimization, and
+                                    rapid prototyping.</li>
+                            </ul>
+                            <p
+                                style="font-size:12px; font-style:italic; border-top:1px solid var(--border); padding-top:8px">
+                                "Leveraging AI to bridge the gap between complex engineering and stunning user
+                                experience."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USERS SECTION -->
+                <div id="section-users" class="admin-section">
+                    <div class="flex justify-between items-center" style="margin-bottom:16px">
+                        <div style="position:relative; width:300px">
+                            <span
+                                style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:14px">🔍</span>
+                            <input type="text" id="adminUserSearch" placeholder="Search users..."
+                                style="width:100%; padding:10px 12px 10px 36px; border-radius:var(--radius); border:1px solid var(--border); background:var(--bg-input); font-size:14px"
+                                onkeyup="AdminManager.renderUserList(this.value)">
+                        </div>
+                    </div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Engagement</th>
+                                    <th>Join Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUserList">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PERFORMANCE SECTION -->
+                <div id="section-performance" class="admin-section">
+                    <div class="perf-grid">
+                        <div class="chart-container-admin">
+                            <div class="chart-title">⚡ Request Latency (ms)</div>
+                            <canvas id="latencyChart"></canvas>
+                        </div>
+                        <div class="chart-container-admin">
+                            <div class="chart-title">🖥️ Storage Load (%)</div>
+                            <canvas id="loadChart"></canvas>
+                        </div>
+                        <div class="chart-container-admin">
+                            <div class="chart-title">📡 Live Requests (PPS)</div>
+                            <canvas id="requestsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="admin-stats-grid" style="margin-top:24px">
+                        <div class="admin-stat-card" style="border-left-color:var(--accent-green)">
+                            <span class="admin-stat-label">Avg. Response Time</span>
+                            <span class="admin-stat-value" id="perfResponseTime">24ms</span>
+                        </div>
+                        <div class="admin-stat-card" style="border-left-color:var(--accent-orange)">
+                            <span class="admin-stat-label">Memory Usage</span>
+                            <span class="admin-stat-value" id="perfMemory">12.4 MB</span>
+                        </div>
+                        <div class="admin-stat-card" style="border-left-color:var(--accent-blue)">
+                            <span class="admin-stat-label">API Health</span>
+                            <span class="admin-stat-value">Healthy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="admin-action-bar reveal-item reveal-5">
+                    <button class="btn btn-secondary btn-ripple" onclick="AdminManager.exportAudit()">📁 Export Audit
+                        Log</button>
+                    <button class="btn btn-outline" style="border-color:var(--accent-red);color:var(--accent-red)"
+                        onclick="AdminManager.resetSystem()">⚠ Global Wipe</button>
+                </div>
+
+                <!-- User Details Modal -->
+                <div id="modal-user-details" class="modal-overlay">
+                    <div class="modal-content">
+                        <header class="modal-header">
+                            <h2 id="modalUserName">User Details</h2>
+                            <button class="modal-close" onclick="Modal.close('modal-user-details')">×</button>
+                        </header>
+                        <div class="manage-user-grid">
+                            <aside class="user-profile-sidebar">
+                                <div class="user-avatar-large" id="modalUserAvatar">U</div>
+                                <div class="user-info-item">
+                                    <div class="user-info-label">Email Address</div>
+                                    <div class="user-info-value" id="modalUserEmail">---</div>
+                                </div>
+                                <div class="user-info-item">
+                                    <div class="user-info-label">Current Role</div>
+                                    <div class="user-info-value" id="modalUserRole">---</div>
+                                </div>
+                                <div class="user-info-item">
+                                    <div class="user-info-label">Mobile</div>
+                                    <div class="user-info-value" id="modalUserMobile">---</div>
+                                </div>
+                                <div class="user-info-item">
+                                    <div class="user-info-label">Joined On</div>
+                                    <div class="user-info-value" id="modalUserJoined">---</div>
+                                </div>
+                                <div style="margin-top:24px">
+                                    <button class="btn btn-sm btn-primary" onclick="AdminManager.editUserRole()">Edit
+                                        Role</button>
+                                </div>
+                            </aside>
+                            <div class="user-metrics-main">
+                                <div class="manage-stats-row">
+                                    <div class="manage-stat-box">
+                                        <span class="manage-stat-num" id="modalStatFoods">0</span>
+                                        <span class="manage-stat-text">Foods Logged</span>
+                                    </div>
+                                    <div class="manage-stat-box">
+                                        <span class="manage-stat-num" id="modalStatHabits">0</span>
+                                        <span class="manage-stat-text">Habits Tracked</span>
+                                    </div>
+                                    <div class="manage-stat-box">
+                                        <span class="manage-stat-num" id="modalStatScore">0%</span>
+                                        <span class="manage-stat-text">Engagement</span>
+                                    </div>
+                                </div>
+                                <div class="chart-container-modal">
+                                    <div class="chart-title">Activity Levels (Last 7 Days)</div>
+                                    <canvas id="modalUserChart"></canvas>
+                                </div>
+                                <div class="admin-table-wrap" style="max-height: 200px; overflow-y: auto;">
+                                    <table class="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Day</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="modalUserActivity">
+                                            <!-- Dynamic -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

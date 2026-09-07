@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodTracker – Sign In</title>
+    <meta name="description" content="Sign in to your FoodTracker account to manage your nutrition and health goals." />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ── Auth page icon animation ── */
+        .auth-logo .logo-icon {
+            animation: authIconSpin 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+            display: inline-flex;
+        }
+
+        @keyframes authIconSpin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            15% {
+                transform: rotate(-15deg) scale(1.15);
+            }
+
+            30% {
+                transform: rotate(15deg) scale(1.1);
+            }
+
+            45% {
+                transform: rotate(-8deg) scale(1.05);
+            }
+
+            60% {
+                transform: rotate(8deg) scale(1.08);
+            }
+
+            75% {
+                transform: rotate(-4deg) scale(1.04);
+            }
+
+            90% {
+                transform: rotate(4deg) scale(1.02);
+            }
+
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+        }
+
+        /* ── Eye toggle button ── */
+        .eye-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            transition: color 0.2s, transform 0.2s;
+            border-radius: 6px;
+        }
+
+        .eye-toggle:hover {
+            color: var(--accent-green);
+            transform: translateY(-50%) scale(1.18);
+        }
+
+        .eye-toggle svg {
+            display: block;
+        }
+
+        .eye-toggle .eye-off {
+            display: none;
+        }
+
+        .eye-toggle.show-pw .eye-on {
+            display: none;
+        }
+
+        .eye-toggle.show-pw .eye-off {
+            display: block;
+        }
+
+        /* ── Password strength meter ── */
+        .pw-strength-bar {
+            height: 5px;
+            border-radius: 99px;
+            background: var(--bg-input);
+            margin-top: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .pw-strength-bar.show {
+            display: block;
+        }
+
+        .pw-strength-fill {
+            height: 100%;
+            border-radius: 99px;
+            width: 0%;
+            transition: width 0.4s ease, background 0.4s ease;
+        }
+
+        .pw-strength-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .pw-strength-label.show {
+            display: block;
+        }
+
+        .strength-weak {
+            color: #ef4444;
+        }
+
+        .strength-medium {
+            color: #f97316;
+        }
+
+        .strength-strong {
+            color: #22c55e;
+        }
+
+        /* ── Password rules hint ── */
+        .pw-rules {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .pw-rules.show {
+            display: block;
+        }
+
+        .pw-rules span {
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="auth-body">
+    <div id="toast-container"></div>
+
+    <div class="auth-container">
+        <div class="auth-logo">
+            <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-svg" width="28" height="28"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+            <span>FoodTracker</span>
+        </div>
+        <h1 class="auth-title">Welcome Back!</h1>
+        <p class="auth-subtitle">Sign in to continue your health journey</p>
+
+        <form id="loginForm" novalidate>
+            <div class="form-group">
+                <label class="form-label" for="loginEmail">Email Address</label>
+                <input class="form-input" type="email" id="loginEmail" placeholder="you@example.com"
+                    autocomplete="email" />
+                <span class="form-error">Please enter a valid email address.</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="loginPassword">Password</label>
+                <div class="input-group">
+                    <input class="form-input" type="password" id="loginPassword"
+                        placeholder="Enter your strong password" autocomplete="current-password" />
+                    <button type="button" class="eye-toggle" id="togglePw" aria-label="Toggle password visibility">
+                        <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                            <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="pw-strength-bar" id="loginStrengthBar">
+                    <div class="pw-strength-fill" id="loginStrengthFill"></div>
+                </div>
+                <div class="pw-strength-label" id="loginStrengthLabel"></div>
+                <span class="form-error" id="loginPwError">Password must be strong (8+ chars, uppercase, number, special
+                    character).</span>
+            </div>
+            <button type="submit" class="btn btn-primary">🚀 Sign In</button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="register.html" class="auth-link">Sign Up →</a>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Live password strength meter on login page
+        const loginPw = document.getElementById('loginPassword');
+        const loginBar = document.getElementById('loginStrengthBar');
+        const loginFill = document.getElementById('loginStrengthFill');
+        const loginLabel = document.getElementById('loginStrengthLabel');
+
+        loginPw.addEventListener('input', function () {
+            const result = checkPasswordStrength(this.value);
+            loginBar.classList.toggle('show', this.value.length > 0);
+            loginLabel.classList.toggle('show', this.value.length > 0);
+            loginFill.style.width = result.pct + '%';
+            loginFill.style.background = result.color;
+            loginLabel.textContent = result.label;
+            loginLabel.className = 'pw-strength-label show ' + result.cls;
+        });
+
+        // SVG Eye toggle
+        document.getElementById('togglePw').addEventListener('click', function () {
+            const pw = document.getElementById('loginPassword');
+            const isShowing = this.classList.toggle('show-pw');
+            pw.type = isShowing ? 'text' : 'password';
+        });
+
+        function checkPasswordStrength(pw) {
+            let score = 0;
+            if (pw.length >= 8) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/[0-9]/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+            if (pw.length >= 12) score++;
+            if (score <= 1) return { pct: 25, color: '#ef4444', label: '🔴 Weak — too simple', cls: 'strength-weak' };
+            if (score <= 2) return { pct: 50, color: '#f97316', label: '🟠 Fair — getting there', cls: 'strength-medium' };
+            if (score <= 3) return { pct: 75, color: '#eab308', label: '🟡 Good — almost there', cls: 'strength-medium' };
+            return { pct: 100, color: '#22c55e', label: '🟢 Strong password!', cls: 'strength-strong' };
+        }
+    </script>
+</body>
+
+</html>
